@@ -43,31 +43,47 @@
       border: 1px solid #fecaca;
       border-radius: 12px;
       padding: 20px;
+      margin-bottom: 24px;
     }
     .alert h3 { color: #dc2626; font-size: 16px; margin-bottom: 12px; }
     .alert ul { margin: 0; padding-left: 20px; color: #7f1d1d; line-height: 1.8; }
     .alert strong { color: #991b1b; }
+    .success-alert {
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+    }
+    .success-alert h3 { color: #166534; font-size: 16px; margin-bottom: 12px; }
+    .success-alert ul { margin: 0; padding-left: 20px; color: #166534; line-height: 1.8; }
+    .table-container { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+    th { background: #f8fafc; font-weight: 600; }
+    .tag-pass { background: #dcfce7; color: #166534; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
+    .tag-fail { background: #fee2e2; color: #991b1b; padding: 2px 8px; border-radius: 4px; font-size: 12px; }
   </style>
 </head>
 <body>
   <h1>📊 Teachable Blog Tree Test Results</h1>
-  <p class="subtitle">29 participants • 8 tasks • Testing blog information architecture</p>
+  <p class="subtitle">28 participants • 8 tasks • Testing blog information architecture • April 2026</p>
 
   <!-- Metric Cards -->
   <div class="metrics">
     <div class="metric-card" style="background: #ef4444;">
       <div class="label">Overall Success</div>
-      <div class="value">44.8%</div>
-      <div class="sub">across all tasks</div>
+      <div class="value">35.7%</div>
+      <div class="sub">target: ≥70%</div>
     </div>
     <div class="metric-card" style="background: #f97316;">
-      <div class="label">Direct Success</div>
-      <div class="value">25.4%</div>
-      <div class="sub">first-click correct</div>
+      <div class="label">Avg Directness</div>
+      <div class="value">19.6%</div>
+      <div class="sub">target: ≥60%</div>
     </div>
     <div class="metric-card" style="background: #8b5cf6;">
       <div class="label">Avg Confidence</div>
-      <div class="value">3.8</div>
+      <div class="value">3.77</div>
       <div class="sub">out of 5</div>
     </div>
     <div class="metric-card" style="background: #22c55e;">
@@ -77,10 +93,32 @@
     </div>
   </div>
 
+  <!-- What's Working -->
+  <div class="success-alert">
+    <h3>✅ What's Working</h3>
+    <ul>
+      <li><strong>Task 1 — Product Updates (82%):</strong> Clear literal match — "feature release" → "Product Updates"</li>
+      <li><strong>Task 6 — Platform How-Tos (75%):</strong> Strong information scent — "step-by-step instructions" → "How-Tos"</li>
+    </ul>
+  </div>
+
+  <!-- Critical Issues -->
+  <div class="alert">
+    <h3>🔴 Critical Issues to Address</h3>
+    <ul>
+      <li><strong>Task 5:</strong> 60.7% chose "Scaling & Operations" instead of "Pricing & Sales" for revenue questions — major label mismatch</li>
+      <li><strong>Task 7:</strong> 53.6% chose "Creator Spotlight" instead of "Case Studies" for success stories — naming is backwards from user expectations</li>
+      <li><strong>Task 8:</strong> 32.1% chose "Product Updates" instead of "Programs and Events" for announcements — more than the correct answer!</li>
+      <li><strong>Task 2:</strong> Users scattered across 4 categories for beginner content — no clear entry point</li>
+      <li><strong>Task 4:</strong> "Course Creation" vs "Curriculum Design" tied at 25% each — users can't distinguish</li>
+      <li><strong>Task 3:</strong> 35.7% chose "Course Creation" for B2B guidance — Enterprise not being discovered</li>
+    </ul>
+  </div>
+
   <!-- Success Rate Chart -->
   <div class="card">
     <h2>Task Success Rates</h2>
-    <p>Green = success, Red = failure</p>
+    <p>Green = success, Light red = failure. Target: ≥70%</p>
     <div class="chart-container">
       <canvas id="successChart"></canvas>
     </div>
@@ -89,29 +127,187 @@
   <!-- Confidence vs Success Chart -->
   <div class="card">
     <h2>Confidence vs. Actual Success</h2>
-    <p>🚨 High confidence + Low success = Information Architecture problem</p>
+    <p>🚨 High confidence + Low success = Information Architecture problem (users think they know, but they're wrong)</p>
     <div class="chart-container">
       <canvas id="confidenceChart"></canvas>
     </div>
   </div>
 
-  <!-- Time on Task Chart -->
+  <!-- Where Users Actually Went -->
   <div class="card">
-    <h2>Average Time on Task (seconds)</h2>
-    <p>Longer times indicate navigation difficulty</p>
-    <div class="chart-container-small">
-      <canvas id="timeChart"></canvas>
+    <h2>Where Users Actually Went (Top Wrong Answers)</h2>
+    <p>Shows the most common incorrect selections for each failed task</p>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Task</th>
+            <th>Correct Answer</th>
+            <th>Success</th>
+            <th>Top Wrong Answer</th>
+            <th>% Wrong</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>T1: Feature Release</td>
+            <td>Product Updates</td>
+            <td><span class="tag-pass">82%</span></td>
+            <td>Creator Spotlight</td>
+            <td>7.1%</td>
+          </tr>
+          <tr>
+            <td>T2: Marketing Tips</td>
+            <td>Audience Building</td>
+            <td><span class="tag-fail">18%</span></td>
+            <td>Email Marketing / Teachable Academy (tied)</td>
+            <td>17.9% each</td>
+          </tr>
+          <tr>
+            <td>T3: B2B Guidance</td>
+            <td>B2B Sales</td>
+            <td><span class="tag-fail">21%</span></td>
+            <td>Course Creation</td>
+            <td>35.7%</td>
+          </tr>
+          <tr>
+            <td>T4: Course Structure</td>
+            <td>Curriculum Design</td>
+            <td><span class="tag-fail">25%</span></td>
+            <td>Course Creation (tied with correct)</td>
+            <td>25%</td>
+          </tr>
+          <tr style="background: #fef2f2;">
+            <td><strong>T5: Increase Revenue</strong></td>
+            <td>Pricing & Sales</td>
+            <td><span class="tag-fail">18%</span></td>
+            <td><strong>Scaling & Operations</strong> 🚨</td>
+            <td><strong>60.7%</strong></td>
+          </tr>
+          <tr>
+            <td>T6: Feature Instructions</td>
+            <td>Platform How-Tos</td>
+            <td><span class="tag-pass">75%</span></td>
+            <td>Teachable Academy</td>
+            <td>10.7%</td>
+          </tr>
+          <tr style="background: #fef2f2;">
+            <td><strong>T7: Creator Story</strong></td>
+            <td>Case Studies</td>
+            <td><span class="tag-fail">25%</span></td>
+            <td><strong>Creator Spotlight</strong> 🚨</td>
+            <td><strong>53.6%</strong></td>
+          </tr>
+          <tr style="background: #fef2f2;">
+            <td><strong>T8: Announcements</strong></td>
+            <td>Programs and Events</td>
+            <td><span class="tag-fail">21%</span></td>
+            <td><strong>Product Updates</strong> 🚨</td>
+            <td><strong>32.1%</strong></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 
-  <!-- Critical Issues -->
+  <!-- Directness Chart -->
+  <div class="card">
+    <h2>Directness Rate by Task</h2>
+    <p>% of users who went straight to the correct answer without backtracking. Target: ≥60%</p>
+    <div class="chart-container-small">
+      <canvas id="directnessChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Confidence Scores -->
+  <div class="card">
+    <h2>Confidence by Task</h2>
+    <p>Average self-reported confidence (1-5 scale). Low confidence on T8 (2.93) = users knew they were guessing.</p>
+    <div class="chart-container-small">
+      <canvas id="confidenceOnlyChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Demographics -->
+  <div class="card">
+    <h2>Participant Demographics</h2>
+    <div class="table-container">
+      <table>
+        <tbody>
+          <tr><td><strong>Total Participants</strong></td><td>28</td></tr>
+          <tr><td><strong>Location</strong></td><td>United States: 22 (79%), United Kingdom: 6 (21%)</td></tr>
+          <tr><td><strong>Gender</strong></td><td>Female: 18 (64%), Male: 10 (36%)</td></tr>
+          <tr><td><strong>Employment</strong></td><td>Self-employed: 100%</td></tr>
+          <tr><td><strong>Seniority</strong></td><td>Owner/Founder: 100%</td></tr>
+          <tr><td><strong>Technical Proficiency</strong></td><td>Advanced: 24 (86%), Intermediate: 4 (14%)</td></tr>
+          <tr><td><strong>Daily Hours Online</strong></td><td>Over 6 hours: 24 (86%), 4-6 hours: 4 (14%)</td></tr>
+          <tr><td><strong>Industry</strong></td><td>Arts: 7, Business Management: 4, Education: 1, IT: 5, Others: 11</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recommendations -->
+  <div class="card">
+    <h2>📋 Recommendations</h2>
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Priority</th>
+            <th>Action</th>
+            <th>Rationale</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background: #fef2f2;">
+            <td>🔴 Critical</td>
+            <td>Rename or clarify "Scaling & Operations"</td>
+            <td>60.7% thought revenue content lived here</td>
+          </tr>
+          <tr style="background: #fef2f2;">
+            <td>🔴 Critical</td>
+            <td>Rename "Case Studies" → "Creator Stories" or merge with "Creator Spotlight"</td>
+            <td>53.6% expected individual stories under "Spotlight"</td>
+          </tr>
+          <tr style="background: #fef2f2;">
+            <td>🔴 High</td>
+            <td>Rename "Programs and Events" to signal announcements</td>
+            <td>More users chose "Product Updates" (32%) than correct answer (21%)</td>
+          </tr>
+          <tr style="background: #fef2f2;">
+            <td>🔴 High</td>
+            <td>Clarify "Course Creation" vs "Curriculum Design"</td>
+            <td>Users can't distinguish — tied at 25% each</td>
+          </tr>
+          <tr style="background: #fefce8;">
+            <td>🟡 Medium</td>
+            <td>Add beginner pathway ("New to Teachable?")</td>
+            <td>Foundational content scattered across 4+ categories</td>
+          </tr>
+          <tr style="background: #fefce8;">
+            <td>🟡 Medium</td>
+            <td>Improve Enterprise/B2B discoverability</td>
+            <td>35.7% went to "Course Creation" for B2B guidance</td>
+          </tr>
+          <tr style="background: #f0fdf4;">
+            <td>🟢 Low</td>
+            <td>Re-test after label changes (30+ participants)</td>
+            <td>Validate fixes before dev handoff</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Verdict -->
   <div class="alert">
-    <h3>🔴 Critical Issues to Address</h3>
+    <h3>⚠️ Verdict: Do Not Implement Current Structure As-Is</h3>
     <ul>
-      <li><strong>Task 7:</strong> 59% chose "Creator Spotlight" instead of "Case Studies" for success stories</li>
-      <li><strong>Task 2:</strong> Users expect "Getting Started" content for beginners, not "Audience Building"</li>
-      <li><strong>Task 4:</strong> "Course Creation" vs "Curriculum Design" distinction is confusing</li>
-      <li><strong>Task 8:</strong> "Programs and Events" doesn't signal announcements/insights</li>
+      <li>Only <strong>2 of 8 tasks</strong> passed the 70% success threshold</li>
+      <li>Overall success rate is <strong>35.7%</strong> (target: ≥70%)</li>
+      <li>High confidence + low success indicates <strong>label/naming problems</strong>, not structural depth issues</li>
+      <li>Recommend revising category names and re-testing before Finsweet development begins</li>
     </ul>
   </div>
 
@@ -127,10 +323,10 @@
       'T8: Announcements'
     ];
     
-    const successData = [86, 17, 24, 21, 21, 79, 17, 21];
-    const failureData = [14, 83, 76, 79, 79, 21, 83, 79];
-    const confidenceData = [4.0, 3.4, 4.0, 4.0, 3.8, 4.3, 4.1, 2.8];
-    const timeData = [37.2, 52.8, 30.0, 27.5, 29.4, 17.6, 23.4, 37.9];
+    const successData = [82, 18, 21, 25, 18, 75, 25, 21];
+    const failureData = [18, 82, 79, 75, 82, 25, 75, 79];
+    const confidenceData = [3.89, 3.43, 3.93, 4.00, 3.68, 4.18, 4.11, 2.93];
+    const directnessData = [32, 7, 11, 11, 14, 50, 25, 7];
 
     // Success Rate Chart (Horizontal Bar)
     new Chart(document.getElementById('successChart'), {
@@ -141,12 +337,12 @@
           {
             label: 'Success %',
             data: successData,
-            backgroundColor: '#22c55e',
+            backgroundColor: successData.map(v => v >= 70 ? '#22c55e' : '#fca5a5'),
           },
           {
             label: 'Failure %',
             data: failureData,
-            backgroundColor: '#fecaca',
+            backgroundColor: '#fee2e2',
           }
         ]
       },
@@ -159,7 +355,23 @@
           y: { stacked: true }
         },
         plugins: {
-          legend: { position: 'bottom' }
+          legend: { position: 'bottom' },
+          annotation: {
+            annotations: {
+              line1: {
+                type: 'line',
+                xMin: 70,
+                xMax: 70,
+                borderColor: '#dc2626',
+                borderWidth: 2,
+                borderDash: [5, 5],
+                label: {
+                  content: '70% Target',
+                  enabled: true
+                }
+              }
+            }
+          }
         }
       }
     });
@@ -211,15 +423,15 @@
       }
     });
 
-    // Time on Task Chart
-    new Chart(document.getElementById('timeChart'), {
+    // Directness Chart
+    new Chart(document.getElementById('directnessChart'), {
       type: 'bar',
       data: {
         labels: labels,
         datasets: [{
-          label: 'Avg Time (seconds)',
-          data: timeData,
-          backgroundColor: timeData.map(v => v > 35 ? '#f97316' : '#3b82f6')
+          label: 'Directness %',
+          data: directnessData,
+          backgroundColor: directnessData.map(v => v >= 60 ? '#22c55e' : '#fca5a5')
         }]
       },
       options: {
@@ -230,7 +442,35 @@
         },
         scales: {
           y: {
-            title: { display: true, text: 'Seconds' }
+            max: 100,
+            title: { display: true, text: 'Directness %' }
+          }
+        }
+      }
+    });
+
+    // Confidence Only Chart
+    new Chart(document.getElementById('confidenceOnlyChart'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Confidence (1-5)',
+          data: confidenceData,
+          backgroundColor: confidenceData.map(v => v < 3.5 ? '#fca5a5' : '#a5b4fc')
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' }
+        },
+        scales: {
+          y: {
+            min: 1,
+            max: 5,
+            title: { display: true, text: 'Confidence Score' }
           }
         }
       }

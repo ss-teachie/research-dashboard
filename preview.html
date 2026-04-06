@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teachable Blog Tree Test Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      font-family: system-ui, -apple-system, sans-serif; 
+      background: #f8fafc; 
+      padding: 24px;
+      color: #1e293b;
+    }
+    h1 { font-size: 24px; margin-bottom: 8px; }
+    .subtitle { color: #64748b; margin-bottom: 24px; }
+    .metrics { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
+    .metric-card {
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+      color: white;
+      min-width: 140px;
+      flex: 1;
+    }
+    .metric-card .label { font-size: 14px; opacity: 0.9; margin-bottom: 4px; }
+    .metric-card .value { font-size: 32px; font-weight: bold; }
+    .metric-card .sub { font-size: 12px; opacity: 0.8; }
+    .card {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    .card h2 { font-size: 18px; margin-bottom: 4px; }
+    .card p { font-size: 14px; color: #64748b; margin-bottom: 16px; }
+    .chart-container { position: relative; height: 300px; }
+    .chart-container-small { position: relative; height: 250px; }
+    .alert {
+      background: #fef2f2;
+      border: 1px solid #fecaca;
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .alert h3 { color: #dc2626; font-size: 16px; margin-bottom: 12px; }
+    .alert ul { margin: 0; padding-left: 20px; color: #7f1d1d; line-height: 1.8; }
+    .alert strong { color: #991b1b; }
+  </style>
+</head>
+<body>
+  <h1>📊 Teachable Blog Tree Test Results</h1>
+  <p class="subtitle">29 participants • 8 tasks • Testing blog information architecture</p>
+
+  <!-- Metric Cards -->
+  <div class="metrics">
+    <div class="metric-card" style="background: #ef4444;">
+      <div class="label">Overall Success</div>
+      <div class="value">44.8%</div>
+      <div class="sub">across all tasks</div>
+    </div>
+    <div class="metric-card" style="background: #f97316;">
+      <div class="label">Direct Success</div>
+      <div class="value">25.4%</div>
+      <div class="sub">first-click correct</div>
+    </div>
+    <div class="metric-card" style="background: #8b5cf6;">
+      <div class="label">Avg Confidence</div>
+      <div class="value">3.8</div>
+      <div class="sub">out of 5</div>
+    </div>
+    <div class="metric-card" style="background: #22c55e;">
+      <div class="label">Tasks Passing</div>
+      <div class="value">2 / 8</div>
+      <div class="sub">≥70% success</div>
+    </div>
+  </div>
+
+  <!-- Success Rate Chart -->
+  <div class="card">
+    <h2>Task Success Rates</h2>
+    <p>Green = success, Red = failure</p>
+    <div class="chart-container">
+      <canvas id="successChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Confidence vs Success Chart -->
+  <div class="card">
+    <h2>Confidence vs. Actual Success</h2>
+    <p>🚨 High confidence + Low success = Information Architecture problem</p>
+    <div class="chart-container">
+      <canvas id="confidenceChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Time on Task Chart -->
+  <div class="card">
+    <h2>Average Time on Task (seconds)</h2>
+    <p>Longer times indicate navigation difficulty</p>
+    <div class="chart-container-small">
+      <canvas id="timeChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Critical Issues -->
+  <div class="alert">
+    <h3>🔴 Critical Issues to Address</h3>
+    <ul>
+      <li><strong>Task 7:</strong> 59% chose "Creator Spotlight" instead of "Case Studies" for success stories</li>
+      <li><strong>Task 2:</strong> Users expect "Getting Started" content for beginners, not "Audience Building"</li>
+      <li><strong>Task 4:</strong> "Course Creation" vs "Curriculum Design" distinction is confusing</li>
+      <li><strong>Task 8:</strong> "Programs and Events" doesn't signal announcements/insights</li>
+    </ul>
+  </div>
+
+  <script>
+    const labels = [
+      'T1: Feature Release',
+      'T2: Marketing Tips',
+      'T3: B2B Guidance',
+      'T4: Course Structure',
+      'T5: Increase Revenue',
+      'T6: How-To Instructions',
+      'T7: Creator Story',
+      'T8: Announcements'
+    ];
+    
+    const successData = [86, 17, 24, 21, 21, 79, 17, 21];
+    const failureData = [14, 83, 76, 79, 79, 21, 83, 79];
+    const confidenceData = [4.0, 3.4, 4.0, 4.0, 3.8, 4.3, 4.1, 2.8];
+    const timeData = [37.2, 52.8, 30.0, 27.5, 29.4, 17.6, 23.4, 37.9];
+
+    // Success Rate Chart (Horizontal Bar)
+    new Chart(document.getElementById('successChart'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Success %',
+            data: successData,
+            backgroundColor: '#22c55e',
+          },
+          {
+            label: 'Failure %',
+            data: failureData,
+            backgroundColor: '#fecaca',
+          }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          x: { stacked: true, max: 100 },
+          y: { stacked: true }
+        },
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+
+    // Confidence vs Success Chart
+    new Chart(document.getElementById('confidenceChart'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: 'Success Rate %',
+            data: successData,
+            backgroundColor: successData.map(v => v >= 70 ? '#22c55e' : '#fca5a5'),
+            yAxisID: 'y'
+          },
+          {
+            label: 'Confidence (1-5)',
+            data: confidenceData,
+            type: 'line',
+            borderColor: '#8b5cf6',
+            backgroundColor: '#8b5cf6',
+            borderWidth: 3,
+            pointRadius: 6,
+            yAxisID: 'y1'
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: { 
+            position: 'left', 
+            max: 100,
+            title: { display: true, text: 'Success %' }
+          },
+          y1: { 
+            position: 'right', 
+            min: 1, 
+            max: 5,
+            title: { display: true, text: 'Confidence' },
+            grid: { drawOnChartArea: false }
+          }
+        },
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+
+    // Time on Task Chart
+    new Chart(document.getElementById('timeChart'), {
+      type: 'bar',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'Avg Time (seconds)',
+          data: timeData,
+          backgroundColor: timeData.map(v => v > 35 ? '#f97316' : '#3b82f6')
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom' }
+        },
+        scales: {
+          y: {
+            title: { display: true, text: 'Seconds' }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
